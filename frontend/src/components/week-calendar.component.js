@@ -91,7 +91,7 @@ export default class WeekCalendar extends Component {
             <HourRow hour="2:00"/>
             <HourRow hour="3:00"/>
             <HourRow hour="4:00"/>
-            <HourRow hour="5:00"/>
+            <HourRow hour="6:00"/>
           </tbody>
         </table>
       </div>
