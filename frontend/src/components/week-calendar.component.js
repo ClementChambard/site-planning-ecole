@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import "./calendar.css"
 
 class HourRow extends Component {
@@ -37,7 +38,8 @@ class RdvLibre extends Component {
     super(props);
 
     this.state = {
-      hour: props.hour
+      hour: props.hour,
+      id: props.rdvid
     };
   }
 
@@ -46,7 +48,7 @@ class RdvLibre extends Component {
       <>
       <tr className="libre">
         <td className="hour" rowSpan="4"><span>{this.state.hour}</span></td>
-        <td rowSpan="4"><b>Horaire disponible : </b> <a className="bouton" herf="https://www.lamborghini.com/fr-en"><strong>Réserver</strong></a>
+      <td rowSpan="4"><b>Horaire disponible : </b> <a className="bouton" href={this.state.id/*"https://www.lamborghini.com/fr-en"*/}><strong>Réserver</strong></a>
  </td>
         
       </tr>
@@ -99,10 +101,42 @@ class RdvOccupe extends Component {
   }
 }
 
+function orderTime(a, b) {
+  if (a.heure === b.heure)
+  {
+    return a.minute - b.minute
+  }
+  return a.heure - b.heure;
+}
 
 export default class WeekCalendar extends Component {
   constructor(props) {
     super(props);
+
+    this.rdvList = this.rdvList.bind(this);
+
+    this.state = {
+      rdvs: []
+    }
+  }
+
+  componentDidMount() {
+    axios.get('http://192.168.0.40:5000/rdvs/')
+         .then(res => {
+           res.data.sort(orderTime);
+           this.setState({ rdvs: res.data });
+         })
+         .catch(err => console.log(err));
+  }
+
+
+  rdvList() {
+    return this.state.rdvs.map(currentRdv => {
+      const hourStr = `${currentRdv.heure}:${currentRdv.minute.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping: false})}`;
+      if (currentRdv.nom_eleve === "NONE") return (<HourRow hour={hourStr} key={currentRdv._id}/>);
+      if (currentRdv.nom_eleve === "LIBRE") return (<RdvLibre rdvid={currentRdv._id} hour={hourStr} key={currentRdv._id}/>);
+      return <RdvOccupe hour={hourStr} eleve={currentRdv.nom_eleve} key={currentRdv._id}/>
+    });
   }
 
   render() {
@@ -112,66 +146,15 @@ export default class WeekCalendar extends Component {
           <thead>
             <tr>
               <th className="first-child">
-              <span className="day">Horaires</span>
-                <span className="long"></span>
-                <span className="short"></span>
-                </th>
-              <th className="last-child">
-                <span className="day">{"Votre_choix"}</span>
-                <span className="long"></span>
-                <span className="short"></span>
-              </th>
-              {/* <th>
-                <span className="day">2</span>
-                <span className="long">Mardi</span>
-                <span className="short">Mar</span>
-              </th>
-              <th>
-                <span className="day">3</span>
-                <span className="long">Mercredi</span>
-                <span className="short">Mer</span>
-              </th>
-              <th>
-                <span className="day">4</span>
-                <span className="long">Jeudi</span>
-                <span className="short">Jeu</span>
+                <span className="thtext">Horaires</span>
               </th>
               <th className="last-child">
-                <span className="day active">5</span>
-                <span className="long">Vendredi</span>
-                <span className="short">Ven</span>
-              </th> */}
+                <span className="thtext">Votre_choix</span>
+              </th>
             </tr>
           </thead>
           <tbody>
-            <RdvLibre hour="8h00"/>
-            <RdvLibre hour="8h10"/>
-            <RdvLibre hour="8h20"/>
-            <RdvLibre hour="8h30"/>
-            <RdvLibre hour="8h40"/>
-            <RdvOccupe hour="8h50" eleve="moi"/>
-            <RdvLibre hour="9h00"/>
-            <RdvLibre hour="9h10"/>
-            <RdvLibre hour="9h20"/>
-            <RdvLibre hour="9h30"/>
-            <RdvLibre hour="9h40"/>
-            <RdvLibre hour="9h50"/>
-            <RdvLibre hour="10h00"/>
-            <RdvLibre hour="10h10"/>
-            <RdvLibre hour="10h20"/>
-            <RdvLibre hour="10h30"/>
-            <RdvLibre hour="10h40"/>
-            <RdvLibre hour="10h50"/>
-            <RdvLibre hour="11h00"/>
-            <RdvLibre hour="11h10"/>
-            <RdvLibre hour="11h20"/>
-            <RdvLibre hour="11h30"/>
-            <RdvLibre hour="11h40"/>
-            <RdvLibre hour="11h50"/>
-            <RdvLibre hour="12h00"/>
-            <RdvLibre hour="12h10"/>
-            <RdvLibre hour="12h20"/>
-            <RdvLibre hour="12h30"/>
+            {this.rdvList()}
           </tbody>
         </table>
       </div>

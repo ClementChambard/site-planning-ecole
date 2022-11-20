@@ -19,7 +19,7 @@
     border-radius:0 6px  0 0;
 }
 
-.calendar thead tr th .day {
+.calendar thead tr th .thtext {
     display: block;
     font-size: 1.2em;
     border-radius: 50%;
@@ -188,6 +188,3 @@
   .button:hover::before {
     transform: translate(-0px, -5px);
   }
-
-  
- 

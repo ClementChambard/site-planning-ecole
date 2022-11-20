@@ -1,12 +1,9 @@
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Navbar from "./components/navbar.component";
-import ExerciseList from "./components/exercise-list.component";
+//import Navbar from "./components/navbar.component";
 import RdvList from "./components/rdv-list-user.component";
-import EditExercise from "./components/edit-exercise.component";
-import CreateExercise from "./components/create-exercise.component";
-import CreateUser from "./components/create-user.component";
+import Reservation from "./components/reservation.component";
 
 //<Navbar />
 function App() {
@@ -17,19 +14,17 @@ function App() {
         <br/>
         <Routes>
           <Route path="/" exact element={<RdvList/>} />
-          <Route path="/edit/:ex_id" element={<EditExerciseF/>} />
-          <Route path="/create" element={<CreateExercise/>} />
-          <Route path="/user" element={<CreateUser/>} />
+          <Route path="/:id" element={<ReservationF/>}></Route>
         </Routes>
       </div>
     </BrowserRouter>
   )
 }
 
-function EditExerciseF() {
+function ReservationF() {
     let params = useParams();
     return (
-      <EditExercise exid={params.ex_id}/>
+      <Reservation rdvid={params.id}/>
     )
 }
 
