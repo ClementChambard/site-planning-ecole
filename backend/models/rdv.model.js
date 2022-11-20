@@ -4,7 +4,8 @@ const Schema = mongoose.Schema;
 
 const rdvSchema = new Schema({
   nom_eleve: { type: String, required: true },
-  date: { type: Date, required: true },
+  heure: { type: Number, required: true },
+  minute: { type: Number, required: true }
 }, {
   timestamps: true,
 });

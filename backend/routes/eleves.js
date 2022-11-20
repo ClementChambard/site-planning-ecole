@@ -1,41 +1,41 @@
 const router = require('express').Router();
-let User = require('../models/user.model');
+let Eleve = require('../models/eleve.model');
 
 router.route('/').get((req, res) => {
-  User.find()
-      .then(users => res.json(users))
+  Eleve.find()
+      .then(eleves => res.json(eleves))
       .catch(err => res.status(400).json('Error: ', + err));
 });
 
 router.route('/add').post((req, res) => {
-  const username = req.body.username;
+  const elevename = req.body.elevename;
 
-  const newUser = new User({username});
+  const newEleve = new Eleve({elevename});
 
-  newUser.save()
-         .then(() => res.json('User added!'))
+  newEleve.save()
+         .then(() => res.json('Eleve added!'))
          .catch(err => res.status(400).json('Error: ' + err));
 });
 
 router.route('/:id').get((req, res) => {
-  User.findById(req.params.id)
-      .then(user => res.json(user))
+  Eleve.findById(req.params.id)
+      .then(eleve => res.json(eleve))
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
 router.route('/:id').delete((req, res) => {
-  User.findByIdAndDelete(req.params.id)
-      .then(() => res.json('User deleted!'))
+  Eleve.findByIdAndDelete(req.params.id)
+      .then(() => res.json('Eleve deleted!'))
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
 router.route('/update/:id').post((req, res) => {
-  User.findById(req.params.id)
-      .then(user => {
-        user.username = req.body.username;
+  Eleve.findById(req.params.id)
+      .then(eleve => {
+        eleve.elevename = req.body.elevename;
 
-        user.save()
-            .then(() => res.json('User updated!'))
+        eleve.save()
+            .then(() => res.json('Eleve updated!'))
             .catch(err => res.status(400).json('Error: ' + err));
       })
       .catch(err => res.status(400).json('Error: ' + err));
