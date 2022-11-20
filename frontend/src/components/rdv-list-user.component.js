@@ -67,8 +67,8 @@ export default class RdvList extends Component {
   render() {
     return (
       <div>
-        <h3>Logged Rdvs</h3>
-        <table className="table">
+        <h3>Bienvenue sur l'interface de prise de rendez-vous de Mme Chambard du samedi 10 décembre .</h3>
+        {/* <table className="table">
           <thead className="thread-light">
             <tr>
               <th>Nom eleve</th>
@@ -79,7 +79,7 @@ export default class RdvList extends Component {
           <tbody>
             { this.rdvList() }
           </tbody>
-        </table>
+        </table> */}
         <WeekCalendar/>
       </div>
     );

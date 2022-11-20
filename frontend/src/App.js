@@ -8,11 +8,12 @@ import EditExercise from "./components/edit-exercise.component";
 import CreateExercise from "./components/create-exercise.component";
 import CreateUser from "./components/create-user.component";
 
+//<Navbar />
 function App() {
   return (
     <BrowserRouter>
       <div className="container">
-        <Navbar />
+        
         <br/>
         <Routes>
           <Route path="/" exact element={<RdvList/>} />
