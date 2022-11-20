@@ -23,12 +23,10 @@ const url = process.env.DB_URL;
   }
 })();
 
-const exercisesRouter = require('./routes/exercises');
-const usersRouter = require('./routes/users');
+const elevesRouter = require('./routes/eleves');
 const rdvsRouter = require('./routes/rdvs');
 
-app.use('/exercises', exercisesRouter);
-app.use('/users', usersRouter);
+app.use('/eleves', elevesRouter);
 app.use('/rdvs', rdvsRouter);
 
 app.listen(port, () => {

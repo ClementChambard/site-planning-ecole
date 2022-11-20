@@ -9,11 +9,13 @@ router.route('/').get((req, res) => {
 
 router.route('/add').post((req, res) => {
   const nom_eleve = req.body.nom_eleve;
-  const date = Date.parse(req.body.date);
+  const heure = req.body.heure;
+  const minute = req.body.minute;
 
   const newRdv = new Rdv({
     nom_eleve,
-    date
+    heure,
+    minute
   });
 
   newRdv.save()
@@ -37,7 +39,8 @@ router.route('/update/:id').post((req, res) => {
   Rdv.findById(req.params.id)
      .then(rdv => {
        rdv.nom_eleve = req.body.nom_eleve;
-       rdv.date = Date.parse(req.body.date);
+       rdv.heure = req.body.heure;
+       rdv.minute = req.body.minute;
 
        rdv.save()
                .then(() => res.json('Rdv updated!'))
