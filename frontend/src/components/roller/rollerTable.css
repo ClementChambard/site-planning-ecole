@@ -1,0 +1,148 @@
+.rollertable {
+    font-family:sans-serif;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: separate;
+    table-layout: fixed;
+    margin-bottom: 50px;
+}
+
+.rollertable thead tr .left {
+    border-radius:6px 0 0 0;
+}
+
+.rollertable thead tr th {
+    background: #626E7E;
+    color: #D1D5DB;
+    padding: 0.5em;
+    overflow: hidden;
+}
+
+.rollertable thead tr .right {
+    border-radius:0 6px  0 0;
+}
+
+.rollertable thead tr th .thtext {
+    display: block;
+    font-size: 1.2em;
+    border-radius: 50%;
+    position: relative;
+    width: 100%;
+    height: 30px;
+    margin: 0 auto 5px;
+    padding: 5px;
+    line-height: 1.8;
+    text-align: center;
+}
+
+.rollertable tbody {
+
+}
+
+.rollertable tbody tr {
+    height: 100px;
+}
+
+.rollertable tbody tr td {
+    text-aligh: center;
+}
+
+.eleve {
+    background: #DDDDDD;
+    border-left: 2px solid #626E7E;
+    border-bottom: 1px solid #626E7E;
+    border-right: 1px solid #626E7E;
+}
+
+.hasRollerQ {
+    background: #EFEFEF;
+    border-bottom: 1px solid #626E7E;
+    border-right: 1px solid #626E7E;
+}
+
+.hasRollerY {
+    background-color: #33EF63;
+    color: #127F23;
+    border-bottom: 1px solid #626E7E;
+    border-right: 1px solid #626E7E;
+}
+.hasRollerN {
+    background-color: #DF5242;
+    color: #8F4040;
+    border-bottom: 1px solid #626E7E;
+    border-right: 1px solid #626E7E;
+}
+
+.eleveText {
+    color: #555555;
+    margin: 20%;
+    font-size: 1.2em;
+}
+
+.yesbut {
+    border-radius: 10px;
+    border: 1px solid #127F23;
+    background-color: #33EF63;
+    color: #127F23;
+    position: relative;
+    left: 10%;
+    width: 30%;
+    transition: 200ms;
+}
+.yesbut:hover {
+    background-color: #127F23;
+    color: white;
+    transition: 200ms;
+}
+
+.nobut {
+    border-radius: 10px;
+    border: 1px solid #8F4040;
+    background-color: #DF5242;
+    color: #8F4040;
+    position: relative;
+    left: 30%;
+    width: 30%;
+    transition: 200ms;
+}
+.nobut:hover {
+    background-color: #8F4040;
+    color: white;
+    transition: 200ms;
+}
+
+.question {
+    position: relative;
+    margin-left: 1%;
+}
+.yes {
+    margin-left: 1%;
+}
+.no {
+    margin-left: 1%;
+}
+
+.tdreset {
+    width: 40px;
+}
+
+.again {
+    margin-top: 10%;
+    margin-left: 10%;
+    width: 40px;
+    height: 40px;
+    background: none;
+    background-image: url('../../redo.svg');
+    border: none;
+}
+
+.again:hover {
+    transform: rotate(360deg);
+    transition: 1000ms;
+}
+
+.textfield {
+    position: relative;
+    width: 100%;
+}
+

@@ -1,0 +1,59 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Untitled</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel ="apple-touch-icon" href="/apple-touch-icon.png">
+        <!-- Place favicon.ico in the root directory -->
+        <script>
+            function play() {
+                var audio = new Audio('/home/clement/Documents/touhouExtract/sfx/se_alert.wav');
+                audio.play();
+            }
+        </script>
+    </head>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade">
+            You are using an <strong>outdated</strong> browser. Please
+            <a href="http://browsehappy.com/">upgrade your browser</a> to improve
+            your experience.
+            </p>
+        <![endif]-->
+        <h1 id="titre" style="text-align: center;"> Bravo, vous avez gagné un Iphone 50S Pro Max + ultimate edition n°14 super pro ultime ++ 500</h1>
+        <p><b id='name'z></b></p>
+        <!-- ceci est une image -->
+        <img id='image' style="text-align:center;margin:auto;display:flex;" src="iphone.png" >
+        <p> c'est moi ! --> <a href="https://www.youtube.com/@MrBeast">chaine de Mr Beast </a> <-- </p>
+        <button id='buton' onclick="
+            if (document.getElementById('buton').textContent === 'non je rigole je vais te le donner ton \nIphone 50S Pro Max + ultimate edition n°14 super pro ultime ++ 500') {
+                var c = prompt('entrez votre code bancaire pour recevoir votre \nIphone 50S Pro Max + ultimate edition n°14 super pro ultime ++ 500'); 
+                document.getElementById('name').textContent = 'Merci pour le code '+c; 
+                play();
+                window.location.href='#name';
+                document.getElementById('image').setAttribute('src', 'amazon.png');
+                document.getElementById('image').setAttribute('onmouseenter', 'alert(\'Merci de votre achat de 8324.90€, vous allez etre debite sur le compte ' + c + '\');');
+                document.getElementById('vendeur').setAttribute('src', 'https://imgs.search.brave.com/hnCG89-OdnA6ZV82MHlBSYz-aNn68nAUhPTRot1cPqE/rs:fit:626:618:1/g:ce/aHR0cDovL2Jsb2dk/ZWNhcm9sZTQzMi5i/LmwucGljLmNlbnRl/cmJsb2cubmV0L3Rr/Z3I1OXd2LmdpZg.gif')
+                document.getElementById('buton').setAttribute('style', 'display: none;');
+                document.getElementById('vendeur').setAttribute('onclick', 'alert(\'tu as trouve le secret, mais tu n\\\'auras pas ton \\nIphone 50S Pro Max + ultimate edition n°14 super pro ultime ++ 500 \');');
+            } else {
+            var c = prompt('entrez votre nom pour recevoir votre \nIphone 50S Pro Max + ultimate edition n°14 super pro ultime ++ 500'); 
+            if (c === 'Jimmy Beast') {
+            alert('Felicitation '+c+' tu as reussis');
+            } else {
+            document.getElementById('name').textContent = 'je vais te hacker '+c; 
+            document.getElementById('titre').textContent = 'ahahahahahahahahhahahahahahahahahahahahahhahhahhhhahahhahahha'; 
+            document.getElementById('name').setAttribute('style', 'color: red;font-size: 3em;');
+            document.getElementById('image').setAttribute('src', 'aha2.png')
+            document.getElementById('vendeur').setAttribute('src', 'hacker.png')
+            play();
+            window.location.href='#name';
+            document.getElementById('buton').textContent = 'non je rigole je vais te le donner ton \nIphone 50S Pro Max + ultimate edition n°14 super pro ultime ++ 500'
+            }}" >clique pour recevoir ton Iphone 50S Pro Max + ultimate edition n°14 super pro ultime ++ 500 </button>
+        <img id="vendeur" src="beast.png">
+    </body>
+</html> 

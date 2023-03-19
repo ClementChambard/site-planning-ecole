@@ -25,9 +25,11 @@ const url = process.env.DB_URL;
 
 const elevesRouter = require('./routes/eleves');
 const rdvsRouter = require('./routes/rdvs');
+const rollerRouter = require('./routes/roller');
 
 app.use('/eleves', elevesRouter);
 app.use('/rdvs', rdvsRouter);
+app.use('/roller', rollerRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port: ${port}`);
