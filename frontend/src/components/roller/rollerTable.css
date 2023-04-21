@@ -146,3 +146,10 @@
     width: 100%;
 }
 
+
+@media (max-width: 720px) {
+    .eleveText {
+        font-size: 1em;
+        margin-left: 0;
+    }
+}

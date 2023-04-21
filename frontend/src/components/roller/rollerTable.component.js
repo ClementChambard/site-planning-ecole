@@ -27,9 +27,9 @@ export default class RollerTable extends Component {
          .catch(err => console.log(err));
   }
 
-  eleveList() {
+  eleveList(m) {
     return this.state.eleves.map(currentEleve => {
-      return <RollerEleve eleve={currentEleve} matches={this.state.matches} key={currentEleve._id}/>
+      return <RollerEleve eleve={currentEleve} matches={m} key={currentEleve._id}/>
     });
   }
 
@@ -56,7 +56,7 @@ export default class RollerTable extends Component {
           </thead>
           <tbody>
             {
-              this.eleveList()
+              this.eleveList(this.state.matches)
             }
           </tbody>
         </table>
