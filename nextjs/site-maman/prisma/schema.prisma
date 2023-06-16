@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Rdv {
+  id      String @id @default(uuid())
+  hour    Int
+  minute  Int
+  student String
+}
+
+model Piscine {
+  id     String   @id @default(uuid())
+  date   DateTime
+  parent String   @default("FREE")
+}
+
+model Roller {
+  id          String  @id @default(uuid())
+  student     String
+  size        Int     @default(0)
+  hasRoller   Boolean @default(false)
+  hasHelmet   Boolean @default(false)
+  hasProtect  Boolean @default(false)
+  hasAnswered Boolean @default(false)
+}
+
+model Sondage {
+  id         String  @id @default(uuid())
+  name       String
+  active     Boolean @default(false)
+  buttonText String
+  info       String  @default(" ")
+}
