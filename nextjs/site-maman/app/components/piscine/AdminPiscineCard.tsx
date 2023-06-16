@@ -17,7 +17,7 @@ const AdminPiscineCard = ({
   const deletePiscine = useCallback(async () => {
     await axios.put(`/api/piscine/${piscine.id}`);
     refresh();
-  }, [piscine]);
+  }, [piscine, refresh]);
   const editPiscineModal = useEditPiscineModal();
   return (
     <AdminCard
@@ -35,8 +35,8 @@ const AdminPiscineCard = ({
           piscine.parent === "NONE"
             ? "text-gray-300"
             : piscine.parent === "FREE"
-              ? "text-green-500"
-              : ""
+            ? "text-green-500"
+            : ""
         }
       >
         {piscine.parent === "NONE" ? (

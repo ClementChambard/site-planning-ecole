@@ -15,7 +15,7 @@ const SondageInfo: React.FC<SondageInfoProps> = ({ name }) => {
     fetcher("/api/sondages").then((dat) =>
       setInfo(dat.filter((d: Sondage) => d.name === name)[0].info)
     );
-  }, []);
+  }, [name]);
 
   return <div className="mx-6 md:mx-12 my-10 text-lg md:text-xl">{info}</div>;
 };

@@ -15,15 +15,6 @@ const EditRdvModal = ({ refresh }: { refresh: () => void }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const editRdvModalDefaultValues: DefaultValues<EditRdvModalFormValues> = {
-      hour: String(editRdvModal.rdv.hour),
-      minute: String(editRdvModal.rdv.minute),
-      inactive: editRdvModal.rdv.student === "NONE",
-    };
-    reset(editRdvModalDefaultValues);
-  }, [editRdvModal.rdv]);
-
   const {
     handleSubmit,
     register,
@@ -32,6 +23,15 @@ const EditRdvModal = ({ refresh }: { refresh: () => void }) => {
   } = useForm<EditRdvModalFormValues>({
     defaultValues: {},
   });
+
+  useEffect(() => {
+    const editRdvModalDefaultValues: DefaultValues<EditRdvModalFormValues> = {
+      hour: String(editRdvModal.rdv.hour),
+      minute: String(editRdvModal.rdv.minute),
+      inactive: editRdvModal.rdv.student === "NONE",
+    };
+    reset(editRdvModalDefaultValues);
+  }, [editRdvModal.rdv, reset]);
 
   const onSubmit: SubmitHandler<EditRdvModalFormValues> = async (data) => {
     setIsLoading(true);
@@ -66,7 +66,7 @@ const EditRdvModal = ({ refresh }: { refresh: () => void }) => {
         toast.error(error.message);
       })
       .finally(() => setIsLoading(false));
-  }, [editRdvModal.rdv]);
+  }, [editRdvModal, refresh]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">

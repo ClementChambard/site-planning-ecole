@@ -14,14 +14,6 @@ const EditRollerModal = ({ refresh }: { refresh: () => void }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const editRollerModalDefaultValues: DefaultValues<EditRollerModalFormValues> =
-    {
-      student: editRollerModal.roller.student,
-    };
-    reset(editRollerModalDefaultValues);
-  }, [editRollerModal.roller]);
-
   const {
     handleSubmit,
     register,
@@ -30,6 +22,14 @@ const EditRollerModal = ({ refresh }: { refresh: () => void }) => {
   } = useForm<EditRollerModalFormValues>({
     defaultValues: {},
   });
+
+  useEffect(() => {
+    const editRollerModalDefaultValues: DefaultValues<EditRollerModalFormValues> =
+      {
+        student: editRollerModal.roller.student,
+      };
+    reset(editRollerModalDefaultValues);
+  }, [editRollerModal.roller, reset]);
 
   const onSubmit: SubmitHandler<EditRollerModalFormValues> = async (data) => {
     setIsLoading(true);

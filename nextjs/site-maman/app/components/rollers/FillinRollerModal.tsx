@@ -15,17 +15,6 @@ const FillinRollerModal = ({ refresh }: { refresh: () => void }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fillinRollerModalDefaultValues: DefaultValues<FillinRollerModalFormValues> =
-    {
-      size: fillinRollerModal.roller.size,
-      hasRoller: fillinRollerModal.roller.hasRoller,
-      hasHelmet: fillinRollerModal.roller.hasHelmet,
-      hasProtect: fillinRollerModal.roller.hasProtect,
-    };
-    reset(fillinRollerModalDefaultValues);
-  }, [fillinRollerModal.roller]);
-
   const {
     handleSubmit,
     register,
@@ -34,6 +23,17 @@ const FillinRollerModal = ({ refresh }: { refresh: () => void }) => {
   } = useForm<FillinRollerModalFormValues>({
     defaultValues: {},
   });
+
+  useEffect(() => {
+    const fillinRollerModalDefaultValues: DefaultValues<FillinRollerModalFormValues> =
+      {
+        size: fillinRollerModal.roller.size,
+        hasRoller: fillinRollerModal.roller.hasRoller,
+        hasHelmet: fillinRollerModal.roller.hasHelmet,
+        hasProtect: fillinRollerModal.roller.hasProtect,
+      };
+    reset(fillinRollerModalDefaultValues);
+  }, [fillinRollerModal.roller, reset]);
 
   const onSubmit: SubmitHandler<FillinRollerModalFormValues> = async (data) => {
     setIsLoading(true);

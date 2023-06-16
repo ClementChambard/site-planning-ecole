@@ -8,9 +8,9 @@ interface RdvCardProps {
 }
 
 const RdvCard: React.FC<RdvCardProps> = ({ rdv }) => {
-  if (rdv.student === "NONE") return null;
-
   const reserveRdvModal = useReserveRdvModal();
+
+  if (rdv.student === "NONE") return null;
 
   return (
     <SondageCard

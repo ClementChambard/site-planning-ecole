@@ -9,7 +9,7 @@ import { Rdv } from "@prisma/client";
 import rdvSortFunc from "@/app/util/rdvSortFunc";
 import SondageInfo from "@/app/components/SondageInfo";
 
-export default function page() {
+export default function Page() {
   const [trigger, setTrigger] = useState(false);
   const refresh = useCallback(() => setTrigger((t) => !t), [setTrigger]);
 

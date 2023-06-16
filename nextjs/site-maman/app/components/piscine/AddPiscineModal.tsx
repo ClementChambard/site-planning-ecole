@@ -30,7 +30,7 @@ const AddPiscineModal = ({ refresh }: { refresh: () => void }) => {
   const onClose = useCallback(() => {
     addPiscineModal.onClose();
     reset(addPiscineModalDefaultValues);
-  }, [addPiscineModal.onClose, reset]);
+  }, [reset, addPiscineModal]);
 
   const onSubmit: SubmitHandler<AddPiscineModalFormValues> = async (data) => {
     setIsLoading(true);

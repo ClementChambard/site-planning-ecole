@@ -14,14 +14,6 @@ const EditPiscineModal = ({ refresh }: { refresh: () => void }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const editPiscineModalDefaultValues: DefaultValues<EditPiscineModalFormValues> =
-    {
-      date: editPiscineModal.piscine.date,
-    };
-    reset(editPiscineModalDefaultValues);
-  }, [editPiscineModal.piscine]);
-
   const {
     handleSubmit,
     register,
@@ -30,6 +22,14 @@ const EditPiscineModal = ({ refresh }: { refresh: () => void }) => {
   } = useForm<EditPiscineModalFormValues>({
     defaultValues: {},
   });
+
+  useEffect(() => {
+    const editPiscineModalDefaultValues: DefaultValues<EditPiscineModalFormValues> =
+      {
+        date: editPiscineModal.piscine.date,
+      };
+    reset(editPiscineModalDefaultValues);
+  }, [editPiscineModal.piscine, reset]);
 
   const onSubmit: SubmitHandler<EditPiscineModalFormValues> = async (data) => {
     setIsLoading(true);
@@ -59,7 +59,7 @@ const EditPiscineModal = ({ refresh }: { refresh: () => void }) => {
         toast.error(error.message);
       })
       .finally(() => setIsLoading(false));
-  }, [editPiscineModal.piscine]);
+  }, [editPiscineModal, refresh]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">

@@ -31,7 +31,7 @@ const AddRdvModal = ({ refresh }: { refresh: () => void }) => {
   const onClose = useCallback(() => {
     addRdvModal.onClose();
     reset(addRdvModalDefaultValues);
-  }, [addRdvModal.onClose, reset]);
+  }, [addRdvModal, reset]);
 
   const onSubmit: SubmitHandler<AddRdvModalFormValues> = async (data) => {
     setIsLoading(true);

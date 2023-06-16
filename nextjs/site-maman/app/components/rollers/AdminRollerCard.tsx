@@ -18,7 +18,7 @@ const AdminRollerCard = ({
   const deleteRoller = useCallback(async () => {
     await axios.put(`/api/rollers/${roller.id}`);
     refresh();
-  }, [roller]);
+  }, [roller, refresh]);
 
   return (
     <AdminCard

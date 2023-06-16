@@ -18,15 +18,6 @@ const EditSondageModal = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const editSondageModalDefaultValues: DefaultValues<EditSondageModalFormValues> =
-    {
-      info: editSondageModal.sondage.info,
-      buttonText: editSondageModal.sondage.buttonText,
-    };
-    reset(editSondageModalDefaultValues);
-  }, [editSondageModal.sondage]);
-
   const {
     handleSubmit,
     register,
@@ -35,6 +26,15 @@ const EditSondageModal = ({
   } = useForm<EditSondageModalFormValues>({
     defaultValues: {},
   });
+
+  useEffect(() => {
+    const editSondageModalDefaultValues: DefaultValues<EditSondageModalFormValues> =
+      {
+        info: editSondageModal.sondage.info,
+        buttonText: editSondageModal.sondage.buttonText,
+      };
+    reset(editSondageModalDefaultValues);
+  }, [editSondageModal.sondage, reset]);
 
   const onSubmit: SubmitHandler<EditSondageModalFormValues> = async (data) => {
     setIsLoading(true);

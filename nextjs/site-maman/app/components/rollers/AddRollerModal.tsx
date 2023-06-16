@@ -30,7 +30,7 @@ const AddRollerModal = ({ refresh }: { refresh: () => void }) => {
   const onClose = useCallback(() => {
     addRollerModal.onClose();
     reset(addRollerModalDefaultValues);
-  }, [addRollerModal.onClose, reset]);
+  }, [addRollerModal, reset]);
 
   const onSubmit: SubmitHandler<AddRollerModalFormValues> = async (data) => {
     setIsLoading(true);
