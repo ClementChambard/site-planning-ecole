@@ -1,0 +1,167 @@
+<AuthRedirect />
+<Modal popover_id="add-roller-modal" title="Ajouter élève" action_label="Ajouter" onclick="submit_add_roller()">
+  <div class="modal-body-container">
+    <Heading title="Ajout d'élève" subtitle="Ajouter un élève pour le sondage des rollers" />
+    <Input label="Nom" name="eleve" type="text" />
+  </div>
+</Modal>
+
+<Modal popover_id="edit-roller-modal" title="Modifier élève" action_label="Modifier" onclick="submit_edit_roller()">
+  <div class="modal-body-container">
+    <Heading title="Modification de roller" subtitle="" />
+    <Input label="Nom" name="eleve" type="text" />
+  </div>
+</Modal>
+
+<div class="admin-list-page">
+  <div class="admin-card-list-container"></div>
+  <button class="btn-component outline" popovertarget="add-roller-modal">
+    <Icon size="24" icon="add_circle_outline" class="btn-component-icon-side" />
+    <span>Ajouter Elève</span>
+  </button>
+</div>
+
+<template id="roller-card-template">
+  <div class="admin-card-container">
+    <div class="admin-card-left">
+      <div class="text-id"></div>
+      <div id="eleve" class="text-semibold"></div>
+      <div class="roller-admin-card-text-line">
+        <div id="roller">Rollers</div>
+        <div id="helmet">Casque</div>
+        <div id="protect">Protections</div>
+        <div id="size"></div>
+        <div class="text-color-wait">En attente de réponse</div>
+      </div>
+    </div>
+    <div class="admin-card-right">
+      <input type="hidden" name="action" value="delete" />
+      <input type="hidden" name="id" value="{{id}}" />
+      <button id="edit" class="btn-component reduce-icon">
+        <Icon size="24" icon="edit" class="btn-component-icon" />
+        <span class="btn-component-label">modifier</span>
+      </button>
+      <button id="delete" class="btn-component reduce-icon">
+        <Icon size="24" icon="delete" class="btn-component-icon" />
+        <span class="btn-component-label">supprimer</span>
+      </button>
+    </div>
+  </div>
+</template>
+<script>
+  const roller_card_template = document.querySelector("#roller-card-template");
+  function set_card_eleve(card, val) {
+    card.querySelector("#eleve").textContent = val;
+  }
+
+  function set_card_has_answered(card, val) {
+    if (val) {
+      card.querySelector("#roller").hidden = false;
+      card.querySelector("#size").hidden = false;
+      card.querySelector("#helmet").hidden = false;
+      card.querySelector("#protect").hidden = false;
+      card.querySelector(".text-color-wait").hidden = true;
+    } else {
+      card.querySelector("#roller").hidden = true;
+      card.querySelector("#size").hidden = true;
+      card.querySelector("#helmet").hidden = true;
+      card.querySelector("#protect").hidden = true;
+      card.querySelector(".text-color-wait").hidden = false;
+    }
+  }
+
+  function set_card_has_roller(clone, val) {
+    clone.querySelector("#roller").classList = val ? "text-color-ok" : "text-color-bad";
+    clone.querySelector("#size").hidden = !val;
+  }
+
+  function set_card_has_helmet(clone, val) {
+    clone.querySelector("#helmet").classList = val ? "text-color-ok" : "text-color-bad";
+  }
+
+  function set_card_has_protect(clone, val) {
+    clone.querySelector("#protect").classList = val ? "text-color-ok" : "text-color-bad";
+  }
+
+  function set_card_size(clone, val) {
+    clone.querySelector("#size").textContent = val;
+  }
+
+  function create_roller_card(roller) {
+    const clone = document.importNode(roller_card_template.content, true);
+    clone.querySelector(".text-id").textContent = `${roller.id}`;
+    clone.querySelector("#delete").onclick = on_delete_roller.bind(roller.id, roller.id);
+    clone.querySelector("#edit").onclick = open_edit_roller_modal.bind(roller.id, roller.id);
+    set_card_has_answered(clone, roller.has_answered);
+    set_card_has_roller(clone, roller.has_roller);
+    set_card_has_helmet(clone, roller.has_helmet);
+    set_card_has_protect(clone, roller.has_protect);
+    set_card_size(clone, roller.size);
+    set_card_eleve(clone, roller.eleve);
+    return clone;
+  }
+
+  /* TODO: sort ?*/
+  let cur_roller = undefined;
+  let cur_card = undefined;
+  let rollers = [];
+  const card_list = document.querySelector(".admin-card-list-container");
+  const edit_modal = document.querySelector("#edit-roller-modal");
+  const edit_eleve = edit_modal.querySelector('input[name="eleve"]');
+  const add_modal = document.querySelector("#add-roller-modal");
+  const add_eleve = add_modal.querySelector('input[name="eleve"]');
+
+  function on_delete_roller(id) {
+    fetch(`/api/rollers/${id}`, {method: "DELETE"});
+    let idx = 0;
+    for (r of rollers) {
+      if (r.id == id) {
+        rollers.splice(idx, 1);
+        card_list.removeChild(card_list.children[idx]);
+        break;
+      }
+      idx++;
+    }
+  }
+
+  function open_edit_roller_modal(id) {
+    let i = 0;
+    for (p of rollers) {
+      if (p.id == id) {
+        cur_roller = p;
+        cur_card = card_list.children[i];
+        break;
+      }
+      i++;
+    }
+    edit_modal.querySelector(".heading-title").textContent = `Modifier ${id}`;
+    edit_eleve.value = cur_roller.eleve;
+    edit_modal.togglePopover();
+  }
+
+  function submit_add_roller() {
+    fetch(`/api/rollers`, {method: "POST", body: JSON.stringify({eleve: add_eleve.value})})
+      .then(response => response.json())
+      .then(roller => {
+        rollers.push(roller);
+        card_list.appendChild(create_roller_card(roller));
+      });
+    add_modal.togglePopover();
+  }
+
+  function submit_edit_roller() {
+    cur_roller.eleve = edit_eleve.value;
+    set_card_eleve(cur_card, cur_roller.eleve);
+    fetch(`/api/rollers/${cur_roller.id}`, {method: "PUT", body: JSON.stringify({eleve: edit_eleve.value})});
+    edit_modal.togglePopover();
+  }
+
+  fetch("/api/rollers", {method: "GET", headers: {"Accept": "application/json"}})
+    .then(response => response.json())
+    .then(response => {
+      rollers = response;
+      for (o of rollers) {
+        card_list.appendChild(create_roller_card(o));
+      }
+    });
+</script>

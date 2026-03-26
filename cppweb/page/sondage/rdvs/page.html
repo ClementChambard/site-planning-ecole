@@ -1,0 +1,102 @@
+<div class="sondage-info"></div>
+<Modal popover_id="reserve-rdv-modal" title="Réservation" action_label="Réserver" footer=""
+  onclick="rdv_modal_submit()">
+  <div class="modal-body-container">
+    <Heading title="" subtitle="Vous assistez au rendez-vous pour :" />
+    <Input label="Nom" name="student" type="text" />
+  </div>
+</Modal>
+<div class="card-list-container"> </div>
+
+<template id="rdv-card-template">
+  <div class="sondage-card-container">
+    <div class="sondage-card-name"> </div>
+    <div class="sondage-card-right">
+      <div class="rdv-card-container adjacent-text">
+        <span class="rdv-card-pre-text">Réservé par</span>
+        <span class="rdv-card-name-text"></span>
+      </div>
+      <button class="sondage-card-button transition">Réserver</button>
+    </div>
+  </div>
+</template>
+<script>
+  function set_card_student(card, student) {
+    if (student == "") {
+      card.querySelector(".rdv-card-container").hidden = true;
+      card.querySelector(".sondage-card-button").hidden = false;
+    } else {
+      card.querySelector(".rdv-card-container").hidden = false;
+      card.querySelector(".sondage-card-button").hidden = true;
+    }
+    card.querySelector(".rdv-card-name-text").textContent = student;
+  }
+
+  const rdv_card_template = document.querySelector("#rdv-card-template");
+  function create_rdv_card(rdv) {
+    const clone = document.importNode(rdv_card_template.content, true);
+    clone.querySelector(".sondage-card-name").textContent = time_txt(rdv);
+    clone.querySelector(".sondage-card-button").onclick = open_rdv_modal.bind(0, rdv.id);
+    set_card_student(clone, rdv.eleve);
+    return clone;
+  }
+
+  const modal = document.querySelector("#reserve-rdv-modal");
+  const student_input = document.querySelector('input[name="student"]');
+  const card_list = document.querySelector(".card-list-container");
+  let rdvs = [];
+  let cur_rdv = undefined;
+  let cur_card = undefined;
+
+  function time_txt(rdv) {
+    let h = `${rdv.heure}h`;
+    if (h.length === 1) h = '0' + h;
+    let m = `${rdv.minute}`;
+    if (m.length === 1) m = '0' + m;
+    h += m;
+    if (rdv.txt != "") h = rdv.txt + " " + h;
+    return h;
+  }
+
+  function open_rdv_modal(idx) {
+    let i = 0;
+    for (r of rdvs) {
+      if (r.id == idx) {
+        cur_rdv = r;
+        cur_card = card_list.children[i];
+        break;
+      }
+      i++;
+    }
+    modal.querySelector(".heading-title").textContent = `Réservation pour le rendez-vous: ${time_txt(cur_rdv)}`;
+    student_input.value = "";
+    modal.togglePopover();
+  }
+
+  function rdv_modal_submit() {
+    set_card_student(cur_card, student_input.value);
+    fetch(`/api/rdvs/${cur_rdv.id}`, {
+      "method": "PUT",
+      "body": JSON.stringify({eleve: student_input.value})
+    });
+    modal.togglePopover();
+  }
+
+  fetch("/api/sondages", {method: "GET", headers: {"Accept": "application/json"}})
+    .then(response => response.json())
+    .then(response => {
+      for (o of response) {
+        if (o.name !== "rdvs") continue;
+        document.querySelector(".sondage-info").textContent = o.desc;
+        break;
+      }
+    });
+  fetch("/api/rdvs", {method: "GET", headers: {"Accept": "application/json"}})
+    .then(response => response.json())
+    .then(response => {
+      rdvs = response;
+      for (o of response) {
+        card_list.appendChild(create_rdv_card(o));
+      }
+    });
+</script>

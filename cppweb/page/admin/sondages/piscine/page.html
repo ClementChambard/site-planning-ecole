@@ -1,0 +1,139 @@
+<AuthRedirect />
+<Modal popover_id="add-piscine-modal" title="Ajouter date piscine" action_label="Ajouter"
+  onclick="submit_add_piscine()">
+  <div class="modal-body-container">
+    <Heading title="Ajout de scéance" subtitle="Ajouter une date de scéance piscine" />
+    <Input label="Date" name="date" type="date" />
+  </div>
+</Modal>
+
+<Modal popover_id="edit-piscine-modal" title="Modifier piscine" action_label="Modifier" onclick="submit_edit_piscine()">
+  <div class="modal-body-container">
+    <Heading title="Modification de roller" subtitle="" />
+    <Input label="Date" name="date" type="date" />
+    <Input label="Nom" name="parent" />
+  </div>
+</Modal>
+
+<div class="admin-list-page">
+  <div class="admin-card-list-container"></div>
+  <button class="btn-component outline" popovertarget="add-piscine-modal">
+    <Icon size="24" icon="add_circle_outline" class="btn-component-icon-side" />
+    <span>Ajouter Séance</span>
+  </button>
+</div>
+
+<template id="piscine-card-template">
+  <div class="admin-card-container">
+    <div class="admin-card-left">
+      <div class="text-id"></div>
+      <div id="date" class="text-semibold"></div>
+      <div id="answer"></div>
+    </div>
+    <div class="admin-card-right">
+      <button id="edit" class="btn-component reduce-icon">
+        <Icon size="24" icon="edit" class="btn-component-icon" />
+        <span class="btn-component-label">modifier</span>
+      </button>
+      <button id="delete" class="btn-component reduce-icon">
+        <Icon size="24" icon="delete" class="btn-component-icon" />
+        <span class="btn-component-label">supprimer</span>
+      </button>
+    </div>
+  </div>
+</template>
+<script>
+  const piscine_card_template = document.querySelector("#piscine-card-template");
+  function set_card_date(card, date) {
+    card.querySelector("#date").textContent = date.replaceAll("-", "/");
+  }
+
+  function set_card_parent(card, parnt) {
+    const div = card.querySelector("#answer");
+    if (parnt == "") {
+      div.classList = "text-color-ok";
+      div.textContent = "Libre";
+    } else {
+      div.classList = "adjacent-text";
+      div.innerHTML = `Réservé par <span class="rdv-card-name-text">${parnt}</span>`;
+    }
+  }
+
+  function create_piscine_card(piscine) {
+    const clone = document.importNode(piscine_card_template.content, true);
+    clone.querySelector(".text-id").textContent = `${piscine.id}`;
+    clone.querySelector("#delete").onclick = on_delete_piscine.bind(piscine.id, piscine.id);
+    clone.querySelector("#edit").onclick = open_edit_piscine_modal.bind(piscine.id, piscine.id);
+    set_card_date(clone, piscine.date);
+    set_card_parent(clone, piscine.parent);
+    return clone;
+  }
+
+  /* TODO: sort ?*/
+  let cur_piscine = undefined;
+  let cur_card = undefined;
+  let piscines = [];
+  const card_list = document.querySelector(".admin-card-list-container");
+  const edit_modal = document.querySelector("#edit-piscine-modal");
+  const edit_date = edit_modal.querySelector('input[name="date"]');
+  const edit_parent = edit_modal.querySelector('input[name="parent"]');
+  const add_modal = document.querySelector("#add-piscine-modal");
+  const add_date = add_modal.querySelector('input[name="date"]');
+
+  function on_delete_piscine(id) {
+    fetch(`/api/piscine/${id}`, {method: "DELETE"});
+    let idx = 0;
+    for (r of piscines) {
+      if (r.id == id) {
+        piscines.splice(idx, 1);
+        card_list.removeChild(card_list.children[idx]);
+        break;
+      }
+      idx++;
+    }
+  }
+
+  function open_edit_piscine_modal(id) {
+    let i = 0;
+    for (p of piscines) {
+      if (p.id == id) {
+        cur_piscine = p;
+        cur_card = card_list.children[i];
+        break;
+      }
+      i++;
+    }
+    edit_modal.querySelector(".heading-title").textContent = `Modifier ${id}`;
+    edit_date.value = cur_piscine.date;
+    edit_parent.value = cur_piscine.parent;
+    edit_modal.togglePopover();
+  }
+
+  function submit_add_piscine() {
+    fetch(`/api/piscine`, {method: "POST", body: JSON.stringify({date: add_date.value})})
+      .then(response => response.json())
+      .then(piscine => {
+        piscines.push(piscine);
+        card_list.appendChild(create_piscine_card(piscine));
+      });
+    add_modal.togglePopover();
+  }
+
+  function submit_edit_piscine() {
+    cur_piscine.date = edit_date.value;
+    cur_piscine.parent = edit_parent.value;
+    set_card_date(cur_card, cur_piscine.date);
+    set_card_parent(cur_card, cur_piscine.parent);
+    fetch(`/api/piscine/${cur_piscine.id}`, {method: "PUT", body: JSON.stringify(cur_piscine)});
+    edit_modal.togglePopover();
+  }
+
+  fetch("/api/piscine", {method: "GET", headers: {"Accept": "application/json"}})
+    .then(response => response.json())
+    .then(response => {
+      piscines = response;
+      for (o of piscines) {
+        card_list.appendChild(create_piscine_card(o));
+      }
+    });
+</script>

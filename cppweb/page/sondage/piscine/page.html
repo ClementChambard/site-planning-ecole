@@ -1,0 +1,87 @@
+<Modal popover_id="reserve-piscine-modal" title="Réservation" action_label="Réserver" onclick="submit_piscine_modal()">
+  <div class="modal-body-container">
+    <Heading title="Reservation pour la piscine" subtitle="Entrez votre nom :" />
+    <Input label="Nom" name="parent" type="text" />
+  </div>
+</Modal>
+<div class="sondage-info"></div>
+<div class="card-list-container"></div>
+
+<template id="piscine-card-template">
+  <div class="sondage-card-container">
+    <div class="sondage-card-name"></div>
+    <div class="sondage-card-right">
+      <div class="piscine-card-container"></div>
+      <button class="sondage-card-button transition">disponible</button>
+    </div>
+  </div>
+</template>
+<script>
+  function set_card_parent(card, parnt) {
+    if (parnt == "") {
+      card.querySelector(".piscine-card-container").hidden = true;
+      card.querySelector(".sondage-card-button").hidden = false;
+    } else {
+      card.querySelector(".piscine-card-container").hidden = false;
+      card.querySelector(".sondage-card-button").hidden = true;
+    }
+    card.querySelector(".piscine-card-container").textContent = parnt;
+  }
+
+  const piscine_card_template = document.querySelector("#piscine-card-template");
+  function create_piscine_card(piscine) {
+    const clone = document.importNode(piscine_card_template.content, true);
+    clone.querySelector(".sondage-card-name").textContent = piscine.date.replaceAll("-", "/");
+    clone.querySelector(".sondage-card-button").onclick = open_piscine_modal.bind(0, piscine.id);
+    set_card_parent(clone, piscine.parent);
+    return clone;
+  }
+
+  const modal = document.getElementById("reserve-piscine-modal");
+  const parent_input = document.querySelector('input[name="parent"]');
+  const card_list = document.querySelector(".card-list-container");
+  let piscines = [];
+  let cur_piscine = undefined;
+  let cur_card = undefined;
+
+  function open_piscine_modal(idx) {
+    let i = 0;
+    for (p of piscines) {
+      if (p.id == idx) {
+        cur_piscine = p;
+        cur_card = card_list.children[i];
+        break;
+      }
+      i++;
+    }
+    parent_input.value = "";
+    modal.togglePopover();
+  }
+
+  function submit_piscine_modal() {
+    set_card_parent(cur_card, parent_input.value);
+    fetch(`/api/piscine/${cur_piscine.id}`, {
+      "method": "PUT",
+      "body": JSON.stringify({parent: parent_input.value})
+    });
+    modal.togglePopover();
+  }
+
+  fetch("/api/sondages", {method: "GET", headers: {"Accept": "application/json"}})
+    .then(response => response.json())
+    .then(response => {
+      for (o of response) {
+        if (o.name !== "piscine") continue;
+        document.querySelector(".sondage-info").textContent = o.desc;
+        break;
+      }
+    });
+  fetch("/api/piscine", {method: "GET", headers: {"Accept": "application/json"}})
+    .then(response => response.json())
+    .then(response => {
+      piscines = response;
+      for (o of response) {
+        card_list.appendChild(create_piscine_card(o));
+      }
+    });
+</script>

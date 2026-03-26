@@ -1,0 +1,174 @@
+<AuthRedirect />
+<Modal popover_id="add-rdv-modal" title="Ajouter rdv" footer="" action_label="Ajouter" onclick="submit_add_rdv()">
+  <div class="modal-body-container">
+    <Heading title="Ajout d'horaire" subtitle="Ajouter un horaire pour un rendez-vous" />
+    <TimeInput label="Horaire" minute_name="minute" hour_name="hour" />
+    <Input label="Date" name="txt" type="text" />
+  </div>
+</Modal>
+
+<Modal popover_id="edit-rdv-modal" title="Modifier rdv" action_label="Modifier" onclick="submit_edit_rdv()"
+  handleSecondaryAction="free_rdv()" action_2nd_label="Libérer">
+  <div class="modal-body-container">
+    <Heading title="Modification de rdv" subtitle="" />
+    <TimeInput label="Horaire" minute_name="minute" hour_name="hour" minute="0" hour="0" />
+    <Input label="Date" name="txt" type="text" />
+    <Input label="Nom" name="student" type="text" />
+  </div>
+</Modal>
+
+<div class="admin-list-page">
+  <div class="admin-card-list-container"></div>
+  <button class="btn-component outline" popovertarget="add-rdv-modal">
+    <Icon size="24" icon="add_circle_outline" class="btn-component-icon-side" />
+    <span>Ajouter RDV</span>
+  </button>
+</div>
+
+<template id="rdv-card-template">
+  <div class="admin-card-container">
+    <div class="admin-card-left">
+      <div class="text-id"></div>
+      <div id="time" class="text-semibold"></div>
+      <div id="answer"></div>
+    </div>
+    <div class="admin-card-right">
+      <button id="edit" class="btn-component reduce-icon">
+        <Icon size="24" icon="edit" class="btn-component-icon" />
+        <span class="btn-component-label">modifier</span>
+      </button>
+      <button id="delete" class="btn-component reduce-icon">
+        <Icon size="24" icon="delete" class="btn-component-icon" />
+        <span class="btn-component-label">supprimer</span>
+      </button>
+    </div>
+  </div>
+</template>
+<script>
+  const rdv_card_template = document.querySelector("#rdv-card-template");
+  function set_card_time(card, rdv) {
+    card.querySelector("#time").textContent = time_txt(rdv);
+  }
+
+  function set_card_student(card, student) {
+    const div = card.querySelector("#answer");
+    if (student == "inactive") {
+      div.classList = "text-color-none";
+      div.textContent = "Inactif";
+    } else if (student == "") {
+      div.classList = "text-color-ok";
+      div.textContent = "Libre";
+    } else {
+      div.classList = "adjacent-text";
+      div.innerHTML = `Réservé par <span class="rdv-card-name-text">${student}</span>`;
+    }
+  }
+
+  function create_rdv_card(rdv) {
+    const clone = document.importNode(rdv_card_template.content, true);
+    clone.querySelector(".text-id").textContent = `${rdv.id}`;
+    clone.querySelector("#delete").onclick = on_delete_rdv.bind(rdv.id, rdv.id);
+    clone.querySelector("#edit").onclick = open_edit_rdv_modal.bind(rdv.id, rdv.id);
+    set_card_time(clone, rdv);
+    set_card_student(clone, rdv.eleve);
+    return clone;
+  }
+
+  /* TODO: sort ?*/
+  let cur_rdv = undefined;
+  let cur_card = undefined;
+  let rdvs = [];
+  const card_list = document.querySelector(".admin-card-list-container");
+  const edit_modal = document.querySelector("#edit-rdv-modal");
+  const edit_hour = edit_modal.querySelector('input[name="hour"]');
+  const edit_minute = edit_modal.querySelector('input[name="minute"]');
+  const edit_txt = edit_modal.querySelector('input[name="txt"]');
+  const edit_student = edit_modal.querySelector('input[name="student"]');
+  const add_modal = document.querySelector("#add-rdv-modal");
+  const add_hour = add_modal.querySelector('input[name="hour"]');
+  const add_minute = add_modal.querySelector('input[name="minute"]');
+  const add_txt = add_modal.querySelector('input[name="txt"]');
+
+  function time_txt(rdv) {
+    let h = `${rdv.heure}h`;
+    if (h.length === 1) h = '0' + h;
+    let m = `${rdv.minute}`;
+    if (m.length === 1) m = '0' + m;
+    h += m;
+    if (rdv.txt != "") h = rdv.txt + " " + h;
+    return h;
+  }
+
+  function on_delete_rdv(id) {
+    fetch(`/api/rdvs/${id}`, {method: "DELETE"});
+    let idx = 0;
+    for (r of rdvs) {
+      if (r.id == id) {
+        rdvs.splice(idx, 1);
+        card_list.removeChild(card_list.children[idx]);
+        break;
+      }
+      idx++;
+    }
+  }
+
+  function open_edit_rdv_modal(id) {
+    let idx = 0;
+    for (r of rdvs) {
+      if (r.id == id) {
+        cur_rdv = r;
+        cur_card = card_list.children[idx];
+        break;
+      }
+      idx++;
+    }
+    edit_modal.querySelector(".heading-title").textContent = `Modifier le rendez-vous: ${id}`;
+    edit_hour.value = r.heure;
+    edit_minute.value = r.minute;
+    edit_txt.value = r.txt;
+    edit_student.value = r.eleve;
+    edit_modal.togglePopover();
+  }
+
+  function submit_add_rdv() {
+    fetch(`/api/rdvs`, {
+      method: "POST",
+      body: JSON.stringify({heure: parseInt(add_hour.value), minute: parseInt(add_minute.value), txt: add_txt.value})
+    }).then(response => response.json())
+      .then(rdv => {
+        rdvs.push(rdv);
+        card_list.appendChild(create_rdv_card(rdv));
+      });
+    add_modal.togglePopover();
+  }
+
+  function submit_edit_rdv() {
+    cur_rdv.heure = parseInt(edit_hour.value);
+    cur_rdv.minute = parseInt(edit_minute.value);
+    cur_rdv.txt = edit_txt.value;
+    cur_rdv.eleve = edit_student.value;
+    set_card_time(cur_card, cur_rdv);
+    set_card_student(cur_card, cur_rdv.eleve);
+    fetch(`/api/rdvs/${cur_rdv.id}`, {
+      method: "PUT",
+      body: JSON.stringify(cur_rdv)
+    });
+    edit_modal.togglePopover();
+  }
+
+  function free_rdv() {
+    cur_rdv.eleve = "";
+    set_card_student(cur_card, "");
+    fetch(`/api/rdvs/${cur_rdv.id}`, {method: "PUT", body: JSON.stringify({eleve: ""})});
+    edit_modal.togglePopover();
+  }
+
+  fetch("/api/rdvs", {method: "GET", headers: {"Accept": "application/json"}})
+    .then(response => response.json())
+    .then(response => {
+      rdvs = response;
+      for (o of rdvs) {
+        card_list.appendChild(create_rdv_card(o));
+      }
+    });
+</script>
